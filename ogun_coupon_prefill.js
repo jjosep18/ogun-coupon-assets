@@ -12,6 +12,11 @@
     var code = params.get('code');
     if (!code) return;
     var auto = params.get('auto') === '1';
+    // 자동제출은 코드별 1회만. coupon_code_submit()이 새로고침을 일으켜도
+    // sessionStorage 플래그로 재제출(=>"이미 사용한 쿠폰" 팝업 무한루프)을 막는다.
+    var KEY = 'ogun_coupon_autosubmit_' + code;
+    var alreadyAuto = false;
+    try { alreadyAuto = !!sessionStorage.getItem(KEY); } catch (e) {}
     var submitted = false;
     var tries = 0;
     var iv = setInterval(function () {
@@ -20,8 +25,9 @@
       if (f) {
         if (!f.value) { f.value = code; f.focus(); }
         clearInterval(iv);
-        if (auto && !submitted) {
+        if (auto && !submitted && !alreadyAuto) {
           submitted = true;
+          try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
           setTimeout(function () {
             if (typeof window.coupon_code_submit === 'function') { window.coupon_code_submit(); return; }
             var btns = document.querySelectorAll('a,button,input[type=button],input[type=submit]');
