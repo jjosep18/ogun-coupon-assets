@@ -9,6 +9,10 @@
  * 2026-08-12 매핑 치환: 구코드→신코드 암호화 매핑(coupon_map.json, 동일 커밋)을
  *   WebCrypto로 복호해 신코드를 채운다. 평문 매핑은 배포물에 없음(구코드 없으면 추출 불가).
  *   URL ?code=구코드 및 수동 입력 모두 인증 전 치환. 매핑 미스/오류 시 기존 동작(그대로).
+ * 2026-08-12 이중쿠폰(v2): coupon_map.json 항목이 {m:{iv,ct}, w:{iv,ct}} 2벌.
+ *   기기 판별 = 페이지 호스트: m.ogun.co.kr → M쿠폰(모바일 사용가능),
+ *   ogun.co.kr/www → W쿠폰(PC 사용가능). 같은 실물 QR/구코드가 기기 불문 동작.
+ *   v1(단일 {iv,ct}) 문서도 하위호환 처리.
  */
 (function () {
   try {
@@ -60,6 +64,18 @@
       return h;
     }
     function sha256(str) { return subtle.digest('SHA-256', _enc.encode(str)); }
+    // 기기 판별: 모바일몰(m.ogun.co.kr) → 'm', 그 외(PC ogun.co.kr/www) → 'w'.
+    function pickMode() {
+      var h = (location.hostname || '').toLowerCase();
+      return h.indexOf('m.') === 0 ? 'm' : 'w';
+    }
+    // 항목에서 현재 기기용 슬롯 선택. v2={m:{iv,ct},w:{iv,ct}} / v1={iv,ct}(하위호환).
+    function pickSlot(e) {
+      if (!e) return null;
+      if (e.iv && e.ct) return e;               // v1 단일
+      var slot = e[pickMode()];
+      return (slot && slot.iv && slot.ct) ? slot : null;
+    }
     // 구코드 → 신코드(매핑 히트 시) / null(미스·오류). 구코드를 알아야만 복호 가능.
     function resolve(raw) {
       var old = norm(raw);
@@ -67,12 +83,12 @@
       return loadMap().then(function (doc) {
         if (!doc || !doc.map) return null;
         return sha256(doc.idx_prefix + old).then(function (h) {
-          var e = doc.map[toHex(h)];
-          if (!e) return null;
+          var slot = pickSlot(doc.map[toHex(h)]);
+          if (!slot) return null;
           return sha256(doc.key_prefix + old).then(function (kb) {
             return subtle.importKey('raw', kb, { name: 'AES-GCM' }, false, ['decrypt'])
               .then(function (key) {
-                return subtle.decrypt({ name: 'AES-GCM', iv: b64(e.iv) }, key, b64(e.ct));
+                return subtle.decrypt({ name: 'AES-GCM', iv: b64(slot.iv) }, key, b64(slot.ct));
               })
               .then(function (pt) { return new TextDecoder().decode(pt); })
               .catch(function () { return null; });
