@@ -1,0 +1,49 @@
+{
+  "v": 1,
+  "alg": "AES-256-GCM",
+  "kdf": "SHA-256(domain+norm(code))",
+  "idx_prefix": "ogun-coupon-idx:v1:",
+  "key_prefix": "ogun-coupon-key:v1:",
+  "map": {
+    "b6eb7034176fba2b3702af56f62e473253b91190cf5247a62af486413b68adcd": {
+      "iv": "MLXCezH49pK3xmiY",
+      "ct": "ptweddm3yWwbE28cCOh4GWjg19QKWrRQRlcERg=="
+    },
+    "e4b2c4d02a4fe7b21c8f5e76b1a6a445d0df7a458db1e6c0cb4f2f204b4aae2b": {
+      "iv": "qBophL7GBb543gql",
+      "ct": "km6qVWlai1gEdJebzamUsfXu6fc++7AiAGJmhw=="
+    },
+    "579ce95bdf93005e9132719768d344c9ba621543ae0cfd27c661259d0ffaa8a6": {
+      "iv": "qqUhCzGQtLP1jc1q",
+      "ct": "l/o/nJqdVMJqSXSvz6lE3LmLJneucRYcR2meVw=="
+    },
+    "3ab94290c8a5735f63fdf100498b18bb968c792bafc23f7a73bb65c80970120d": {
+      "iv": "BYBpar9HObrr+Pcw",
+      "ct": "zXHIaLYgctl69nkRrB5N4plwnDCuYI7S42BiMQ=="
+    },
+    "1378e585bf9bc74632d22e1eea3f042f0c31ee91cdb39a89a33f2c3c5f50f9f2": {
+      "iv": "7Ddnhva285bP55j8",
+      "ct": "Tk+HJTNgYhgepRIiT2PlCyitGvtathcgyGSo7Q=="
+    },
+    "011fd8c948be3dd74cc7253d8f12f53e80e927463254de7536f2f8acf471310e": {
+      "iv": "8r3uriOMaS5xcnPB",
+      "ct": "VuzsE0wNsKWTZ4H1NfqgJnpciH3rM3fIDu3MQA=="
+    },
+    "1ddd905ef2d35700517b9cff7a0c10402655787db15639a025ccca96e3a413dd": {
+      "iv": "koXNRJnXha59yaF+",
+      "ct": "lzsEjiOimgG7aBxh9Rf77CDn+aP7yl1IJHhi8w=="
+    },
+    "dbe88846751d786238afcb943968e1f8d6133365eb4171d70e37e4c2aa54535c": {
+      "iv": "eXOixESt1fdcimNk",
+      "ct": "EQExGqZovli6wQdbBGl2pgwUWRHsAHSKufAujQ=="
+    },
+    "fdc725e6212e546b20082c9b3cc5b202908fb1705b7a7b752c0efb17a0aaa53a": {
+      "iv": "zs3kY9lLiMXKmgzF",
+      "ct": "4sbdOJwEWYMWdhuBt/J/qE9QSn5gT1oVrISCAQ=="
+    },
+    "1cd35f2859c2bea6009e950bf652bdaad44311c1bb9f497ca0dce8828aa4569c": {
+      "iv": "TxD2/3xq3rrpbPET",
+      "ct": "9om5V5Dyf5ctlkz1dKXopQNdVS+ASJ7BQ0moPw=="
+    }
+  }
+}
