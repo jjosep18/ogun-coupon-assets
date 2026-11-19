@@ -45,6 +45,25 @@
     var code = params.get('code');
     var auto = params.get('auto') === '1';
 
+    // 2026-11-19 kakaosync 보완: ?code 가 없는데 유효 스태시(ogun_pending_coupon)가 있으면
+    //   스태시의 원코드로 프리필한다. kakaosyncLogin 은 returnUrl 인자가 없어 로그인 후 returnUrl
+    //   쿠키로 coupon.html 로 복귀할 때 ?code 가 비어 있는데, 로그인 페이지 복구 JS 가 심어둔
+    //   스태시(시각 포함, 30분 TTL)로 복원한다. 자동제출은 하지 않는다(auto 는 URL 전용).
+    //   소비 즉시 삭제해 결제 중 redirect 폴백 오발을 막는다. ?code 가 있으면 스태시만 정리.
+    if (!code) {
+      try {
+        var _raw = localStorage.getItem('ogun_pending_coupon');
+        if (_raw) {
+          var _o = JSON.parse(_raw);
+          if (_o && _o.code && _o.ts && (Date.now() - _o.ts <= 1800000) &&
+              /^[0-9A-Za-z._-]{4,64}$/.test(_o.code)) {
+            code = _o.code;
+          }
+        }
+      } catch (e) {}
+    }
+    try { localStorage.removeItem('ogun_pending_coupon'); } catch (e) {} // 쿠폰 페이지 도달 = 플로우 완료
+
     // ---- 암호화 매핑 (WebCrypto) : norm(old) → 신코드 ----
     var subtle = (window.crypto && window.crypto.subtle) ? window.crypto.subtle : null;
     var _mapPromise = null;
